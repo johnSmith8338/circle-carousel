@@ -1,0 +1,24 @@
+<div class="slider-container">
+  <h2 class="title">Типы залов</h2>
+  <div class="slider">
+    <div *ngFor="let slide of extendedSlides; let i = index; trackBy: trackById"
+      class="slide"
+      #slide
+      (click)="clickSlide(i)"
+    >
+      <div class="img-wrapper">
+        <img *ngIf="slide.image" [src]="slide.image" alt="Slide" />
+      </div>
+      <h3 class="subtitle">{{ slide.subtitle }}</h3>
+    </div>
+    <div class="slide-info" #slideInfo>
+      <button (click)="resetActiveSlide()">назад</button>
+      <h4>{{extendedSlides[centralSlideIndex].subtitle}}</h4>
+      <p>{{extendedSlides[centralSlideIndex].text}}</p>
+    </div>
+  </div>
+  <div class="controls">
+    <button (click)="prevSlide()">Назад</button>
+    <button (click)="nextSlide()">Вперед</button>
+  </div>
+</div>

@@ -1,0 +1,152 @@
+:host {
+    --slide-width: 340px;
+    --slide-height: 540px;
+
+    display: block;
+    background: #333;
+    font-family: system-ui;
+    color: #fff;
+    overflow: clip;
+
+    h2,
+    h3 {
+        margin: 0;
+        text-align: center;
+    }
+
+    h2,
+    .controls {
+        padding-block: 24px;
+    }
+}
+
+.slider-container {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: max-content 1fr max-content;
+    align-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slide {
+    width: var(--slide-width);
+    height: var(--slide-height);
+    position: absolute;
+    display: grid;
+    gap: 16px;
+    transform-origin: center 1000px;
+    transition: transform 0.5s ease;
+
+    h3 {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        padding-block-start: 16px;
+    }
+
+    &.active {
+        z-index: 1;
+
+        .img-wrapper {
+            border-radius: 0;
+        }
+    }
+}
+
+.img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: clip;
+    border-radius: 20px;
+    background: #000;
+
+    img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+}
+
+.slide-info {
+    position: fixed;
+    bottom: 0;
+    left: -100%;
+    height: 100%;
+    width: 50vw;
+    display: grid;
+    grid-template-rows: max-content max-content 1fr;
+    background: #000;
+    padding: 48px;
+    box-sizing: border-box;
+    transition: left 0.5s ease;
+
+    @media (max-width: 1024px) {
+        width: 100%;
+        height: calc(100% - 100%/3);
+        padding-inline: 16px;
+        z-index: 1;
+    }
+
+    &.visible {
+        transition-delay: 1s;
+        left: 0;
+
+        button,
+        h4,
+        p {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 1s;
+        }
+
+        h4 {
+            transition-delay: 1.25s;
+        }
+
+        p {
+            transition-delay: 1.5s;
+        }
+    }
+
+    button,
+    h4,
+    p {
+        opacity: 0;
+        transform: translateX(-50%);
+        transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    button {
+        justify-self: start;
+    }
+
+    h4 {
+        margin-block-start: 4em;
+    }
+}
+
+.controls {
+    height: fit-content;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-self: end;
+
+    button {
+        padding: 10px 32px;
+    }
+}
