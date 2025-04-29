@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, ViewChildren, QueryList, ElementRef, inject, Renderer2, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-slider',
@@ -39,6 +40,7 @@ export class SliderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Массив для хранения функций удаления слушателей
   private eventListeners: Array<() => void> = [];
+  private slideElementsSubscription: Subscription | null = null;
 
   ngOnInit() {
     // Если массив slides пустой, добавляем заглушку
@@ -65,15 +67,18 @@ export class SliderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.updateSlidePosition();
     // Устанавливаем класс active для начального слайда
     // this.updateActiveSlide();
-    // Обновляем радиус при изменении размера окна
-    window.addEventListener('resize', () => {
-      this.updateDistance();
+
+    // Сохраняем функцию слушателя для resize
+    const onResize = () => {
+      this.updateDistance();  // Обновляем радиус вращения при изменении размера окна
       this.updateSlideSizes(); // Обновляем размеры при ресайзе
       this.updateSlidePosition();
-    });
+    }
+    window.addEventListener('resize', onResize);
+    this.eventListeners.push(() => window.removeEventListener('resize', onResize));
 
     // Подписываемся на изменения slideElements
-    this.slideElements.changes.subscribe(() => {
+    this.slideElementsSubscription = this.slideElements.changes.subscribe(() => {
       this.updateSlidePosition();
       // this.updateActiveSlide();
     });
@@ -86,6 +91,11 @@ export class SliderComponent implements OnInit, AfterViewInit, OnDestroy {
     // Удаляем все слушатели событий при уничтожении компонента
     this.eventListeners.forEach(unsubscribe => unsubscribe());
     this.eventListeners = [];
+    // Отписываемся от slideElements.changes
+    if (this.slideElementsSubscription) {
+      this.slideElementsSubscription.unsubscribe();
+      this.slideElementsSubscription = null;
+    }
   }
 
   // Метод trackBy для *ngFor
